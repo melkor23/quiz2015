@@ -72,7 +72,7 @@ exports.answer = function (req, res) {
     }
     res.render('quizes/answer', {
         quiz: req.quiz,
-        respuesta: resultado
+        respuesta: resultado, errors:[]
     });
     /* models.Quiz.findById(req.params.quizId).then(function (quiz) {
         if (req.query.respuesta === quiz.respuesta) {
@@ -99,7 +99,7 @@ exports.new = function (req, res) {
         {
             pregunta: 'Pregunta',
             respuesta: 'respuesta',
-            tema:'tema'
+            tema: 'tema'
         }
     );
 
@@ -114,7 +114,7 @@ exports.new = function (req, res) {
 exports.create = function (req, res) {
     var quiz = models.Quiz.build(req.body.quiz);
     console.log('--------Create');
-console.log(req.body.quiz.pregunta);
+    console.log(req.body.quiz.pregunta);
     console.log(req.body.quiz.respuesta);
     console.log(req.body.quiz.tema);
     quiz.validate().then(
@@ -128,7 +128,7 @@ console.log(req.body.quiz.pregunta);
             } else {
                 quiz.save({
                     fields: ['pregunta',
-                    'respuesta','tema']
+                    'respuesta', 'tema']
                 }).then(function () {
                     res.redirect('../quizes');
                 });
@@ -142,9 +142,9 @@ console.log(req.body.quiz.pregunta);
 exports.edit = function (req, res) {
 
     var quiz = req.quiz; //autoload
-console.log(quiz.pregunta);
-console.log(quiz.respuesta);
-console.log(quiz.tema);
+    console.log(quiz.pregunta);
+    console.log(quiz.respuesta);
+    console.log(quiz.tema);
 
     res.render('quizes/edit', {
         quiz: quiz,
@@ -160,21 +160,31 @@ exports.update = function (req, res) {
     req.quiz.validate().then(
         function (err) {
             if (err) {
-                res.render('quizes/edit', {quiz: req.quiz, errors: err.errors});
+                res.render('quizes/edit', {
+                    quiz: req.quiz,
+                    errors: err.errors
+                });
             } else {
                 req.quiz
-                    .save({fields: ['pregunta', 'respuesta', 'tema']})
-                    .then(function () {res.redirect('/quizes');});
+                    .save({
+                        fields: ['pregunta', 'respuesta', 'tema']
+                    })
+                    .then(function () {
+                        res.redirect('/quizes');
+                    });
             }
         }
     );
 };
 
-exports.destroy=function(req,res)
-{
-    req.quiz.destroy().then(function(){res.redirect(
-        '/quizes'
-    );}).catch(function(error){next(error)});
+exports.destroy = function (req, res) {
+    req.quiz.destroy().then(function () {
+        res.redirect(
+            '/quizes'
+        );
+    }).catch(function (error) {
+        next(error)
+    });
 }
 
 //GET  /quizes/author
