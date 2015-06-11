@@ -5,7 +5,14 @@ var models = require('../models/models.js');
 
 //AutoLoad
 exports.load = function (req, res, next, quizId) {
-    models.Quiz.findById(quizId).then(
+    models.Quiz.find({
+        where: {
+            id: Number(quizId)
+        },
+        include: [{
+            model: models.Comment
+        }]
+    }).then(
         function (quiz) {
             if (quiz) {
                 req.quiz = quiz;
@@ -72,7 +79,8 @@ exports.answer = function (req, res) {
     }
     res.render('quizes/answer', {
         quiz: req.quiz,
-        respuesta: resultado, errors:[]
+        respuesta: resultado,
+        errors: []
     });
     /* models.Quiz.findById(req.params.quizId).then(function (quiz) {
         if (req.query.respuesta === quiz.respuesta) {
@@ -189,5 +197,7 @@ exports.destroy = function (req, res) {
 
 //GET  /quizes/author
 exports.author = function (req, res) {
-    res.render('quizes/author', {});
+    res.render('quizes/author', {
+        errors: []
+    });
 };
